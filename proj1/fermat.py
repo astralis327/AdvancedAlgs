@@ -72,7 +72,7 @@ def miller_rabin(N, k):
     return 'Probably prime' #1
 #
  #1+1+2log2(N-1)+k(1+1+n^3+1+1+1+(i-1)(n^3 +1+1+1) + 1)+1
- #k and i can be simplified to n, so the largest term in the sum above is n^5. 
+ #k and i can be simplified to n, so the largest term in the sum above is n^5.
 
 
 
