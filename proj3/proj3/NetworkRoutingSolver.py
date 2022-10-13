@@ -67,7 +67,7 @@ class NetworkRoutingSolver:
         while pq_size != 0:
             #deleteMin gets called |V| times, DecreaseKey is log|V| for binaryHeap and is called
             #|E| times, and Insert is coupled together with the constructor of both the array and
-            #the heap implementations. 
+            #the heap implementations.
 
 
             #delete the minimum from the pq
