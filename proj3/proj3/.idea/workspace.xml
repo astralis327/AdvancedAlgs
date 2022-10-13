@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e3fd23b4-c0a5-4bc1-a6c3-9dbe982d8b27" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../Dijkstra_Priority_Queue-1.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../__MACOSX/._proj3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../__MACOSX/proj3/._.DS_Store" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../__MACOSX/proj3/._CS4412Graph.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../__MACOSX/proj3/._NetworkRoutingSolver.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../__MACOSX/proj3/._Proj3GUI.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../__MACOSX/proj3/._which_pyqt.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/proj3.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-    </list>
+    <list default="true" id="e3fd23b4-c0a5-4bc1-a6c3-9dbe982d8b27" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -85,7 +71,7 @@
       <option name="presentableId" value="Default" />
       <updated>1664405105499</updated>
       <workItem from="1664405107073" duration="3089000" />
-      <workItem from="1665280339780" duration="81458000" />
+      <workItem from="1665280339780" duration="81811000" />
     </task>
     <servers />
   </component>
