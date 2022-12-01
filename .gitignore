@@ -32,3 +32,4 @@ var/
 *.manifest
 *.spec
 
+*.zip
