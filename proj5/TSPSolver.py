@@ -40,7 +40,7 @@ class TSPSolver:
 		solution found, and three null values for fields not used for this 
 		algorithm</returns> 
 	'''
-	
+
 	def defaultRandomTour( self, time_allowance=60.0 ):
 		results = {}
 		cities = self._scenario.getCities()
@@ -132,8 +132,8 @@ class TSPSolver:
 		numSolns += 1
 
 		if bssf.cost < np.inf:
-				# Found a valid route
-				foundTour = True
+			# Found a valid route
+			foundTour = True
 		end_time = time.time()
 		results['cost'] = bssf.cost if foundTour else math.inf
 		results['time'] = end_time - start_time
@@ -154,7 +154,7 @@ class TSPSolver:
 		not include the initial BSSF), the best solution found, and three more ints: 
 		max queue size, total number of states created, and number of pruned states.</returns> 
 	'''
-		
+
 	def bab_init( self, time_allowance=60.0 ):
 		start_time = time.time()
 		results = {}
@@ -272,8 +272,8 @@ class TSPSolver:
 			else:
 				lb += minInRow								#update lb
 				for c in range(0, len(matrix[r])):
-						newCellVal = matrix[r][c] - minInRow	# update matrix
-						matrix[r][c] = newCellVal
+					newCellVal = matrix[r][c] - minInRow	# update matrix
+					matrix[r][c] = newCellVal
 		return matrix, lb
 
 	def reduceByCol(self, matrix, visited_cities, lb, current_city,start_time, time_allowance):
@@ -321,9 +321,90 @@ class TSPSolver:
 		best solution found.  You may use the other three field however you like.
 		algorithm</returns> 
 	'''
-		
-	def fancy( self,time_allowance=60.0 ):
 
-		
+	def cheapest( self,time_allowance=60.0 ):
+		results = {}
+		start_time = time.time()
+		cities = self._scenario.getCities()
+		route = []
+		ncities = len(cities)
+		bssf = None
+		minRow = math.inf
+		foundTour = False
+		costMatrix = self.make_matrix([], ncities, cities)
+		totalCost = 0
+		firstCity = cities[0]
+		route.append(cities[0])
+		indexOfMin = 0
+		# initDistance = min(costMatrix[0])
+		r = 0
+		while foundTour != True and time.time()-start_time < time_allowance:
 
+			#initialize base
+			for r in range(2):
+				bestCityChoice, location = self.findClosestCity(costMatrix[r])
+
+				totalCost += costMatrix[r][location]
+				lastIndex = len(route)-1
+				# dist = costMatrix[cities_visited[-1]][indexOfMin]
+				for col2 in range(len(costMatrix)):
+					costMatrix[lastIndex][col2] = math.inf
+				costMatrix[indexOfMin][lastIndex] = math.inf
+				for row in range(len(costMatrix)):
+					costMatrix[row][indexOfMin] = math.inf
+				route.append(cities[location])
+
+
+			prevCity = lastIndex
+			# for toCity in range(len(unvisitedCities)):
+			hamiltonianNotFound = True
+			while(hamiltonianNotFound and time.time()-start_time < time_allowance ):
+				bestCityChoice, location = self.findClosestCity(costMatrix[location])
+
+				for j in range(1, len(route)):
+					hamChoices = []
+					k = location
+					if costMatrix[k][j] != math.inf:
+						minimizeHam = costMatrix[k][j] +\
+									  + cities[0].costTo(cities[k]) \
+									  - cities[0].costTo(cities[j])
+
+						if minimizeHam != -math.inf and minimizeHam != math.inf:
+							hamChoices.append((minimizeHam, j))
+					if len(hamChoices) == 0 and len(route) < len(cities) - 1:
+						costMatrix[prevCity][location] = math.inf
+						continue
+					else:
+						hamiltonianNotFound = False
+			route.append(cities[k])
+			bssf = TSPSolution(route)
+
+			if bssf.cost != math.inf:
+				foundTour = True
+		end_time = time.time()
+		results['cost'] = bssf.cost
+		results['time'] = end_time - start_time
+		results['count'] = 1
+		results['soln'] = bssf
+		results['max'] = None
+		results['total'] = None
+		results['pruned'] = None
+		return results
+
+
+
+
+	# def minimizRoute(self):
+	# 	costMatrix[]
+	#
+	# 	pass
+
+	def findClosestCity(self, nextCityChoices):
+		minInRow = math.inf
+		for col in range(len(nextCityChoices)):
+			if nextCityChoices[col] < minInRow:
+				minInRow = nextCityChoices[col]
+				indexOfMin = col
+
+		return minInRow, indexOfMin
 
