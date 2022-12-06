@@ -165,16 +165,8 @@ class TSPSolver:
 		if bssf == False:
 			bssf = self.defaultRandomTour()
 		costMatrix = []
-		for row in range(ncities): 				#make the initial cost matrix
-			currentRow = []
-			city = cities[row]
-			for col in range(ncities):
-				cityToBeEntered = cities[col]
-				if row == col: cost = math.inf		# make the diagonal cost infinity
-				else:
-					cost = city.costTo(cityToBeEntered)
-				currentRow.append(cost)
-			costMatrix.append(currentRow)
+		costMatrix = self.make_matrix(costMatrix,ncities,cities)
+
 		start_node = self.lowerbound(costMatrix, [], 0, None, start_time, time_allowance) 	#reduce the cost matrix and find initial lowerbound
 		S.put((start_node[0],(start_node[1], [0])))											#put this initial matrix into the pq
 		sol_route, sol_cost, count, num_pruned, max = \
@@ -305,6 +297,22 @@ class TSPSolver:
 	def city_already_visited(self, visited_cities, city):
 		return city in visited_cities
 
+	def make_matrix(self, costMatrix, ncities, cities):
+		for row in range(ncities):  # make the initial cost matrix
+			currentRow = []
+			city = cities[row]
+			for col in range(ncities):
+				cityToBeEntered = cities[col]
+				if row == col:
+					cost = math.inf  # make the diagonal cost infinity
+				else:
+					cost = city.costTo(cityToBeEntered)
+				currentRow.append(cost)
+			costMatrix.append(currentRow)
+
+		return costMatrix
+
+
 	''' <summary>
 		This is the entry point for the algorithm you'll write for your group project.
 		</summary>
@@ -315,7 +323,7 @@ class TSPSolver:
 	'''
 		
 	def fancy( self,time_allowance=60.0 ):
-		pass
+
 		
 
 
