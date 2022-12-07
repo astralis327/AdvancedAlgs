@@ -337,46 +337,49 @@ class TSPSolver:
 		route.append(cities[0])
 		indexOfMin = 0
 		# initDistance = min(costMatrix[0])
-		r = 0
+		location = 0
 		while foundTour != True and time.time()-start_time < time_allowance:
-
+			cityLocation = [0]
 			#initialize base
-			for r in range(2):
-				bestCityChoice, location = self.findClosestCity(costMatrix[r])
+			for index in range(2):
+				bestCityChoice, location = self.findClosestCity(costMatrix[location])
 
-				totalCost += costMatrix[r][location]
-				lastIndex = len(route)-1
+				# totalCost += costMatrix[index][location]
+				lastIndex = cityLocation[-1]
 				# dist = costMatrix[cities_visited[-1]][indexOfMin]
 				for col2 in range(len(costMatrix)):
 					costMatrix[lastIndex][col2] = math.inf
 				costMatrix[indexOfMin][lastIndex] = math.inf
 				for row in range(len(costMatrix)):
-					costMatrix[row][indexOfMin] = math.inf
+					costMatrix[row][lastIndex] = math.inf
 				route.append(cities[location])
+				cityLocation.append(location)
 
-
-			prevCity = lastIndex
+			prevCity = cityLocation[-1]
 			# for toCity in range(len(unvisitedCities)):
 			hamiltonianNotFound = True
 			while(hamiltonianNotFound and time.time()-start_time < time_allowance ):
 				bestCityChoice, location = self.findClosestCity(costMatrix[location])
 
-				for j in range(1, len(route)):
+				for j in cityLocation:
+					if j == 0: continue
 					hamChoices = []
 					k = location
-					if costMatrix[k][j] != math.inf:
-						minimizeHam = costMatrix[k][j] +\
+					if cities[k].costTo(cities[j]) != math.inf:
+						minimizeHam = cities[k].costTo(cities[j]) +\
 									  + cities[0].costTo(cities[k]) \
 									  - cities[0].costTo(cities[j])
 
-						if minimizeHam != -math.inf and minimizeHam != math.inf:
+						if minimizeHam != -math.inf and minimizeHam != math.inf and math.isnan(minimizeHam) is False:
 							hamChoices.append((minimizeHam, j))
-					if len(hamChoices) == 0 and len(route) < len(cities) - 1:
-						costMatrix[prevCity][location] = math.inf
-						continue
-					else:
-						hamiltonianNotFound = False
+				if len(hamChoices) == 0 and len(route) < len(cities) - 1:
+					costMatrix[prevCity][location] = math.inf
+					continue
+				else:
+					hamiltonianNotFound = False
 			route.append(cities[k])
+
+
 			bssf = TSPSolution(route)
 
 			if bssf.cost != math.inf:
