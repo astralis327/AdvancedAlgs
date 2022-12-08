@@ -441,17 +441,38 @@ class TSPSolver:
 
 		while foundTour != True and time.time() - start_time < time_allowance:
 			potential_ks = []
+
 			for location in range(len(route)):	#Iterate through already visited cities j_n
-				minIndex = self.findIndexOfMin(route[location], unvisited_cities)
-				potential_ks.append((j_indices[location], minIndex))
+				# minIndex = self.findIndexOfMin(route[location], unvisited_cities)
+				# potential_ks.append((j_indices[location], minIndex))
+
+				indexOfk = 0
+				currentMinDist = math.inf
+				for kIndex in range(len(unvisited_cities)):
+					if unvisited_cities[kIndex] is not None:
+						if route[location].costTo(unvisited_cities[kIndex]) < currentMinDist:
+							currentMinDist = route[location].costTo(unvisited_cities[kIndex])
+							indexOfk = kIndex
+				potential_ks.append((currentMinDist, indexOfk))
 
 			minCost = math.inf
 			k = 0
-			for j, index in potential_ks:
-				costToK = cities[j].costTo(cities[index])
+			for potentialK in range(len(potential_ks)):
+				costToK = route[potentialK].costTo(cities[potential_ks[potentialK][1]])
 				if minCost > costToK:
 					minCost = costToK
-					k = index
+					k = potential_ks[potentialK][1]
+
+
+
+
+			# minCost = math.inf
+			# k = 0
+			# for j, index in potential_ks:
+			# 	costToK = cities[j].costTo(cities[index])
+			# 	if minCost > costToK:
+			# 		minCost = costToK
+			# 		k = index
 
 
 			# potential_ks_cities = []
@@ -469,10 +490,20 @@ class TSPSolver:
 
 				netCost = cost_ik + cost_kj - cost_ij
 				if (netCost == math.inf): continue
-				insertionCosts.append(netCost)
+				insertionCosts.append((netCost, cityJ))
 
-			cityI = self.findIndexOfMin(None, insertionCosts)
-			route.insert(cityI+2,cities[k])
+
+			minInsertion = math.inf
+			insertionLocation = 0
+			for cost in range(len(insertionCosts)):
+				if insertionCosts[cost][0] < minInsertion:
+					minInsertion = insertionCosts[cost][0]
+					insertionLocation = insertionCosts[cost][1]
+
+
+
+			# cityI = self.findIndexOfMin(None, insertionCosts)
+			route.insert(insertionLocation, cities[k])
 			j_indices.append(k)
 			unvisited_cities[k] = None
 			if len(route) == len(cities):
@@ -481,6 +512,18 @@ class TSPSolver:
 
 				if bssf.cost != math.inf:
 					foundTour = True
+
+
+		end_time = time.time()
+		results['cost'] = bssf.cost if foundTour else math.inf
+		results['time'] = end_time - start_time
+		results['count'] = None
+		results['soln'] = bssf
+		results['max'] = None
+		results['total'] = None
+		results['pruned'] = None
+		return results
+
 
 
 	def findIndexOfMin(self, city, list):
