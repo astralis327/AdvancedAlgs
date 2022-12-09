@@ -321,92 +321,6 @@ class TSPSolver:
 		best solution found.  You may use the other three field however you like.
 		algorithm</returns> 
 	'''
-
-	# def cheapest( self,time_allowance=60.0 ):
-	# 	results = {}
-	# 	start_time = time.time()
-	# 	cities = self._scenario.getCities()
-	# 	route = []
-	# 	ncities = len(cities)
-	# 	bssf = None
-	# 	minRow = math.inf
-	# 	foundTour = False
-	# 	costMatrix = self.make_matrix([], ncities, cities)
-	# 	totalCost = 0
-	# 	firstCity = cities[0]
-	# 	route.append(cities[0])
-	# 	indexOfMin = 0
-	# 	# initDistance = min(costMatrix[0])
-	# 	location = 0
-	# 	cityLocation = [(0,0)]
-	# 	#initialize base
-	# 	for index in range(2):
-	# 		bestCityChoice, location = self.findClosestCity(costMatrix[location])
-	#
-	# 		# totalCost += costMatrix[index][location]
-	# 		lastIndex = cityLocation[-1][0]
-	# 		# dist = costMatrix[cities_visited[-1]][indexOfMin]
-	# 		costMatrix = self.infinityOut(costMatrix,lastIndex,indexOfMin)
-	# 		route.append(cities[location])
-	#
-	# 		totalCost += cities[lastIndex].costTo(cities[location])
-	# 		cityLocation.append((location))
-	#
-	# 	while foundTour != True and time.time() - start_time < time_allowance:
-	# 		prevCity = cityLocation[-1]
-	# 		# for toCity in range(len(unvisitedCities)):
-	# 		hamiltonianNotFound = True
-	# 		while(hamiltonianNotFound and time.time()-start_time < time_allowance ):
-	# 			bestCityChoice, location = self.findClosestCity(costMatrix[location])
-	#
-	# 			hamChoices = []
-	# 			for j in cityLocation:
-	# 				costFromStart = j
-	# 				j = j[0]
-	# 				if j == 0: continue
-	# 				k = location
-	# 				if cities[j].costTo(cities[k]) != math.inf:
-	# 					minimizeHam = cities[j].costTo(cities[k]) +\
-	# 								  - cities[0].costTo(cities[j]) \
-	# 								  +	costFromStart \
-	# 								+  cities[k].costTo(cities[0])
-	# 				# elif cities[k].costTo(cities[j]) != math.inf:
-	# 				# 	minimizeHam = cities[k].costTo(cities[j]) \
-	# 				# 				  + cities[0].costTo[cities[k]] \
-	# 				# 				  - costFromStart
-	#
-	#
-	#
-	#
-	# 					if minimizeHam != -math.inf and minimizeHam != math.inf and math.isnan(minimizeHam) is False:
-	# 						hamChoices.append((minimizeHam, j))
-	# 			if len(hamChoices) == 0 and len(route) < len(cities) - 1:
-	# 				costMatrix[prevCity][location] = math.inf
-	# 				continue
-	# 			else:
-	# 				hamiltonianNotFound = False
-	# 				prevCity = min(hamChoices)[1]
-	# 		costMatrix = self.infinityOut(costMatrix, cityLocation[-1][0], k)
-	# 		route.append(cities[k])
-	# 		cityLocation.append((k, cityLocation[-1][1] + cities[prevCity].costTo(cities[k])))
-	#
-	#
-	# 		if len(route) == ncities:
-	# 			route.append(cities[0])
-	# 			bssf = TSPSolution(route)
-	#
-	# 			if bssf.cost != math.inf:
-	# 				foundTour = True
-	# 	end_time = time.time()
-	# 	results['cost'] = bssf.cost
-	# 	results['time'] = end_time - start_time
-	# 	results['count'] = 1
-	# 	results['soln'] = bssf
-	# 	results['max'] = None
-	# 	results['total'] = None
-	# 	results['pruned'] = None
-	# 	return results
-
 	def cheapest( self,time_allowance=60.0 ):
 		results = {}
 		start_time = time.time()
@@ -422,9 +336,8 @@ class TSPSolver:
 		indexOfMin = 0
 		location = 0
 		cityLocation = [(0,0)]
-		#initialize base
 		j_indices = [0]
-		for index in range(2):
+		for index in range(2):			#Initialize the base triangle.
 			bestCityChoice, location = self.findClosestCity(costMatrix[location])
 
 			# totalCost += costMatrix[index][location]
@@ -433,6 +346,7 @@ class TSPSolver:
 			costMatrix = self.infinityOut(costMatrix,lastIndex,indexOfMin)
 			route.append(cities[location])
 
+			#Every time we add a city to the route, we delete it from unvisited cities and add its index to the route index
 			del unvisited_cities[location]
 			unvisited_cities.insert(location, None)
 			j_indices.append(location)
@@ -440,45 +354,28 @@ class TSPSolver:
 			# cityLocation.append((location))
 
 		while foundTour != True and time.time() - start_time < time_allowance:
+			#potential indices of cities to add to the route
 			potential_ks = []
 
 			for location in range(len(route)):	#Iterate through already visited cities j_n
-				# minIndex = self.findIndexOfMin(route[location], unvisited_cities)
-				# potential_ks.append((j_indices[location], minIndex))
-
 				indexOfk = 0
 				currentMinDist = math.inf
-				for kIndex in range(len(unvisited_cities)):
+				for kIndex in range(len(unvisited_cities)): #iterate through unvisited cities k_n
 					if unvisited_cities[kIndex] is not None:
-						if route[location].costTo(unvisited_cities[kIndex]) < currentMinDist:
+						if route[location].costTo(unvisited_cities[kIndex]) < currentMinDist: #find the closest city to the current j
 							currentMinDist = route[location].costTo(unvisited_cities[kIndex])
 							indexOfk = kIndex
-				potential_ks.append((currentMinDist, indexOfk))
+				potential_ks.append((currentMinDist, indexOfk)) #append the possible k to the list
 
 			minCost = math.inf
 			k = 0
 			for potentialK in range(len(potential_ks)):
+				#find the k and j that has the smallest distance of all the other ks and js
 				costToK = route[potentialK].costTo(cities[potential_ks[potentialK][1]])
 				if minCost > costToK:
 					minCost = costToK
 					k = potential_ks[potentialK][1]
 
-
-
-
-			# minCost = math.inf
-			# k = 0
-			# for j, index in potential_ks:
-			# 	costToK = cities[j].costTo(cities[index])
-			# 	if minCost > costToK:
-			# 		minCost = costToK
-			# 		k = index
-
-
-			# potential_ks_cities = []
-			# for j, index in potential_ks:
-			# 	potential_ks_cities.append(cities[index])
-			# k = self.findIndexOfMin(cities[location],potential_ks_cities)
 
 			insertionCosts = []
 			for cityI in range(len(route)):
@@ -487,12 +384,13 @@ class TSPSolver:
 				cost_ik = route[cityI].costTo(cities[k])
 				cost_kj = cities[k].costTo(route[cityJ])
 				cost_ij = route[cityI].costTo(route[cityJ])
+				#Find the cost of the new cycle that would be created by adding this city and add it to the insertionCost list
 
 				netCost = cost_ik + cost_kj - cost_ij
 				if (netCost == math.inf): continue
 				insertionCosts.append((netCost, cityJ))
 
-
+			#find the min of the insertion cost list
 			minInsertion = math.inf
 			insertionLocation = 0
 			for cost in range(len(insertionCosts)):
@@ -501,8 +399,7 @@ class TSPSolver:
 					insertionLocation = insertionCosts[cost][1]
 
 
-
-			# cityI = self.findIndexOfMin(None, insertionCosts)
+			#Finally add the k that contributes the least cost to the cycle next to j
 			route.insert(insertionLocation, cities[k])
 			j_indices.append(k)
 			unvisited_cities[k] = None
@@ -523,22 +420,6 @@ class TSPSolver:
 		results['total'] = None
 		results['pruned'] = None
 		return results
-
-
-
-	def findIndexOfMin(self, city, list):
-		minimum = math.inf
-		minIndex = 0
-		for element in range(len(list)):
-			if list[element] is not None:
-				if city is not None:
-					dist = city.costTo(list[element])
-				else:
-					dist = list[element]
-				if dist < minimum:
-					minimum = dist
-					minIndex = element
-		return minIndex
 
 
 	def infinityOut(self, costMatrix, lastIndex, indexOfMin):
